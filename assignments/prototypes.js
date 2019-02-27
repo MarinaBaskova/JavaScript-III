@@ -134,21 +134,127 @@ Humanoid.prototype.greet = function () {
     language: 'Elvish',
   });
 
-  console.log(mage.createdAt); // Today's date
-  console.log(archer.dimensions); // { length: 1, width: 2, height: 4 }
-  console.log(swordsman.healthPoints); // 15
-  console.log(mage.name); // Bruce
-  console.log(swordsman.team); // The Round Table
-  console.log(mage.weapons); // Staff of Shamalama
-  console.log(archer.language); // Elvish
-  console.log(archer.greet()); // Lilith offers a greeting in Elvish.
-  console.log(mage.takeDamage()); // Bruce took damage.
-  console.log(swordsman.destroy()); // Sir Mustachio was removed from the game.
+  // console.log(mage.createdAt); // Today's date
+  // console.log(archer.dimensions); // { length: 1, width: 2, height: 4 }
+  // console.log(swordsman.healthPoints); // 15
+  // console.log(mage.name); // Bruce
+  // console.log(swordsman.team); // The Round Table
+  // console.log(mage.weapons); // Staff of Shamalama
+  // console.log(archer.language); // Elvish
+  // console.log(archer.greet()); // Lilith offers a greeting in Elvish.
+  // console.log(mage.takeDamage()); // Bruce took damage.
+  // console.log(swordsman.destroy()); // Sir Mustachio was removed from the game.
 
 
   // Stretch task: 
   // * Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.  
-  // * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
+  // * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction(destroy helth) if health gets to 0 or drops below 0;
   // * Create two new objects, one a villain and one a hero and fight it out with methods!
 
-  
+// Vilain
+
+function Vilain (atrVil) {
+  Humanoid.call(this, atrVil);
+  this.swordDamage = atrVil.swordDamage;
+}
+
+//inherit all methods 
+Vilain.prototype = Object.create(Humanoid.prototype);
+
+
+//Vilain method to remove health point from Hero
+
+Vilain.prototype.attackWithSword = function (opponent) {
+
+  let opponentHealth = opponent.healthPoints;
+  //if health gets to 0 or drops below 0;
+  if(this.healthPoints <= 0) {
+    return `${opponent.name} the game is over for you and you have been killed by ${this.name}`;
+  } else {
+    opponent.healthPoints -= this.swordDamage;
+    if(opponent.healthPoints <= 0) {
+      return `${opponent.name} the game is over for you and you have been killed by ${this.name}`;
+    } else {
+      return `${opponent.name} you have been attacked by ${this.name} and your health is ${opponent.healthPoints}`;
+    }
+  }
+};
+
+
+//Hero 
+
+function Hero (artHero) {
+  Humanoid.call(this, artHero);
+  this.arrowDamade= artHero.arrowDamade;
+  this.arrowCount = artHero.arrowCount;
+}
+
+Hero.prototype = Object.create(Humanoid.prototype);
+
+Hero.prototype.shootArrow= function (opponent) {
+  let opponentHealth = opponent.healthPoints;
+  //if arrowCount gets to 0 or drops below 0;
+  if(this.arrowCount <= 0) {
+    return `${this.name} you have no more arrows to shoot`;
+  } else {
+    this.arrowCount -= 1;
+    console.log(`${this.name} you have ${this.arrowCount} arrows left`);
+  }
+  //if health gets to 0 or drops below 0;
+  if(this.healthPoints <= 0) {
+    return `${opponent.name} the game is over for you and you have been killed by ${this.name}`;
+  } else {
+    opponent.healthPoints -= this.arrowDamade;
+    if(opponent.healthPoints <= 0) {
+      return `${opponent.name} the game is over for you and you have been killed by ${this.name}`;
+    } else {
+      return `${opponent.name} you have been attacked by ${this.name} and your health is ${opponent.healthPoints}`;
+    }
+  }
+};
+
+
+//obj from constructor functions Hero and Vilain
+
+const heroOne = new Hero({
+  createdAt: new Date(),
+  dimensions: {
+    length: 1,
+    width: 2,
+    height: 4,
+  },
+  healthPoints: 10,
+  name: 'HeroPlayer1',
+  team: 'Kingdom',
+  weapons: [
+    'Giant Sword',
+    'Shield',
+  ],
+  language: 'English',
+  arrowDamade: 2,
+  arrowCount: 2
+});
+
+const vilainOne = new Vilain({
+  createdAt: new Date(),
+  dimensions: {
+    length: 1,
+    width: 2,
+    height: 4,
+  },
+  healthPoints: 10,
+  name: 'VilainPlayer1',
+  team: 'Kingdom',
+  weapons: [
+    'Bow',
+    'Dagger',
+  ],
+  language: 'English',
+  swordDamage: 5
+});
+
+console.log(vilainOne.attackWithSword(heroOne));
+console.log(heroOne.shootArrow(vilainOne));
+console.log(heroOne.shootArrow(vilainOne));
+console.log(heroOne.shootArrow(vilainOne));
+console.log(vilainOne.attackWithSword(heroOne));
